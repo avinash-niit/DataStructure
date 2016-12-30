@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace LinkedListApp
 {
-    class Program
+    public class Project
     {
-        static void Main(string[] args)
-        {
-            Console.ReadLine();
-        }
+        public int Id { get; set; }
+
+        public string Name { get; set; }
     }
 }
