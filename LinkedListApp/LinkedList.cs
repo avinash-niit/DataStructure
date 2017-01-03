@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LinkedListApp
 {
-    public class LinkedList<T> where T:class
+    public class LinkedList<T> : IDisposable where T:class, IDisposable
     {
         public Node<T> Head { get; private set; }
 
@@ -18,7 +18,9 @@ namespace LinkedListApp
             tail = Head;
         }
 
-        public void AddNode(Node<T> node) {
+        public void Add(T element) {
+            Node<T> node = new Node<T>();
+            node.Value = element;
             node.Next = null;
 
             if (tail == null) {
@@ -32,13 +34,44 @@ namespace LinkedListApp
             Count++;
         }
 
-        public void InsertAt(Node<T> node, int index) {
-            Node<T> temp = Head;
-            for (int i = 0; i < index && temp.Next !=null; i++) {
+        public void InsertAt(int index, T element)
+        {
+            if (index > Count) {
+                throw new IndexOutOfRangeException(
+                    string.Format(Properties.Resources.IndexOutOfRangeMessage, index)
+                    ); 
             }
+
+            Node<T> node = new Node<T>();
+            node.Value = element;
+
+            Node<T> temp = Head;
+            if (index == 0) {
+                node.Next = Head;
+                Head = node;
+            }
+            else if (index == Count) {
+                Add(element);
+            }
+            else
+            {
+                temp = FindNodeAtIndex(index - 1, temp);
+                node.Next = temp.Next;
+                temp.Next = node;
+            }
+            Count++;
         }
 
-        public void RemoveNode(Node<T> node){
+        private Node<T> FindNodeAtIndex(int index, Node<T> temp)
+        {
+            while (index > 0 && temp != null) {
+                temp = temp.Next;
+                index--;
+            }
+            return temp;
+        }
+
+        public void Remove(T element){
         }
 
         public void RemoveAt(int index){
@@ -78,5 +111,48 @@ namespace LinkedListApp
         public void ReomveLoop() {
         }
 
+        public void PrintList()
+        {
+            Node<T> temp = Head;
+            while (temp != null) {
+                Console.Write(temp.Value);
+                temp = temp.Next;
+            }
+        }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Node<T> temp = Head;
+                    Console.WriteLine("-------------------------");
+                    while (temp != null)
+                    {
+                        temp = Head.Next;
+                        Console.WriteLine("Releasing : " + Head.Value);
+                        Free(Head);
+                        Head = temp;
+
+                    }
+                }
+                disposedValue = true;
+            }
+        }
+
+        private void Free(Node<T> head)
+        {
+            head.Dispose();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
     }
 }
