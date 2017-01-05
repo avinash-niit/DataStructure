@@ -4,19 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LinkedListApp
-{
-    public class LinkedList<T> : IDisposable where T:class, IDisposable
-    {
+namespace LinkedListApp {
+    public class LinkedList<T> : IDisposable where T : class, IDisposable {
+
+        #region Instance Variables
+
         public Node<T> Head { get; private set; }
-
         private Node<T> tail;
-
         public int Count { get; private set; }
 
-        public LinkedList(){
+        #endregion
+
+        #region Constrcutor
+
+        public LinkedList() {
             tail = Head;
         }
+
+        #endregion
+
+        #region Public Methods
 
         public void Add(T element) {
             Node<T> node = new Node<T>();
@@ -24,22 +31,19 @@ namespace LinkedListApp
             node.Next = null;
 
             if (tail == null) {
-                Head = node;
-                tail = Head;
-            }
-            else {
+                Head = tail = node;
+            } else {
                 tail.Next = node;
                 tail = node;
             }
             Count++;
         }
 
-        public void InsertAt(int index, T element)
-        {
+        public void InsertAt(int index, T element) {
             if (index > Count) {
                 throw new IndexOutOfRangeException(
                     string.Format(Properties.Resources.IndexOutOfRangeMessage, index)
-                    ); 
+                    );
             }
 
             Node<T> node = new Node<T>();
@@ -49,12 +53,9 @@ namespace LinkedListApp
             if (index == 0) {
                 node.Next = Head;
                 Head = node;
-            }
-            else if (index == Count) {
+            } else if (index == Count) {
                 Add(element);
-            }
-            else
-            {
+            } else {
                 temp = FindNodeAtIndex(index - 1, temp);
                 node.Next = temp.Next;
                 temp.Next = node;
@@ -62,19 +63,11 @@ namespace LinkedListApp
             Count++;
         }
 
-        private Node<T> FindNodeAtIndex(int index, Node<T> temp)
-        {
-            while (index > 0 && temp != null) {
-                temp = temp.Next;
-                index--;
-            }
-            return temp;
+        public void Remove(T element) {
+
         }
 
-        public void Remove(T element){
-        }
-
-        public void RemoveAt(int index){
+        public void RemoveAt(int index) {
         }
 
         public bool IsCircular() {
@@ -89,15 +82,15 @@ namespace LinkedListApp
             throw new NotImplementedException();
         }
 
-        public int GetItemFromTail(int index){
+        public int GetItemFromTail(int index) {
             throw new NotImplementedException();
         }
 
-        public int FindItemFromTop(T value){
+        public int FindItemFromTop(T value) {
             throw new NotImplementedException();
         }
 
-        public int FindItemFromTail(T value){
+        public int FindItemFromTail(T value) {
             throw new NotImplementedException();
         }
 
@@ -111,8 +104,7 @@ namespace LinkedListApp
         public void ReomveLoop() {
         }
 
-        public void PrintList()
-        {
+        public void PrintList() {
             Node<T> temp = Head;
             while (temp != null) {
                 Console.Write(temp.Value);
@@ -120,19 +112,29 @@ namespace LinkedListApp
             }
         }
 
+        #endregion
+
+        #region Private Methods
+
+        private Node<T> FindNodeAtIndex(int index, Node<T> temp) {
+            while (index > 0 && temp != null) {
+                temp = temp.Next;
+                index--;
+            }
+            return temp;
+        }
+
+        #endregion
+
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
+        protected virtual void Dispose(bool disposing) {
+            if (!disposedValue) {
+                if (disposing) {
                     Node<T> temp = Head;
                     Console.WriteLine("-------------------------");
-                    while (temp != null)
-                    {
+                    while (temp != null) {
                         temp = Head.Next;
                         Console.WriteLine("Releasing : " + Head.Value);
                         Free(Head);
@@ -144,13 +146,11 @@ namespace LinkedListApp
             }
         }
 
-        private void Free(Node<T> head)
-        {
+        private void Free(Node<T> head) {
             head.Dispose();
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
         }
         #endregion
